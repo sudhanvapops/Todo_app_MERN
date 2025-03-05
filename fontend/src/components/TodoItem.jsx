@@ -9,7 +9,7 @@ const TodoItem = ({ todo }) => {
   const { updateTodo, deleteTodo, toggleisCompleted } = useTodo()
 
   const update = () => {
-    updateTodo(todo._id, todoMsg)
+    updateTodo(todo.date, todoMsg)
     setIsReadOnly(!isReadOnly)
   }
 
@@ -29,7 +29,7 @@ const TodoItem = ({ todo }) => {
         className='' 
         checked={todo.isCompleted}
         onChange={()=>{
-          toggleisCompleted(todo._id,todo.isCompleted)
+          toggleisCompleted(todo.date,todo.isCompleted)
         }}
         type="checkbox"/>
       </div>
@@ -54,7 +54,10 @@ const TodoItem = ({ todo }) => {
 
         {/* Delete Button */}
         <button className='cursor-pointer mx-2 px-2 rounded-sm bg-red-500 font-bold'
-        onClick={()=>{deleteTodo(todo._id)}}
+        onClick={()=>{
+          console.log("Delete Frontend: ",todo)
+          deleteTodo(todo.date)}
+          }
         >Delete</button>
 
       </div>

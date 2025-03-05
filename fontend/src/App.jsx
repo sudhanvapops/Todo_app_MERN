@@ -26,7 +26,7 @@ function App() {
         <div className='my-8'>
         {
           todos.map((item) => (
-            <div key={item._id} className='my-1'>
+            <div key={item.date} className='my-1'>
               <TodoItem todo={item} />
             </div>
           ))

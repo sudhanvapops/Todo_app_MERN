@@ -10,22 +10,28 @@ export function useFunc() {
     const addTodo = async (todo) => {
 
         const newTodo = {
+            date: Date.now(),
             todo: todo,
             isCompleted: false
         }
 
         try {
-            let data = await fetch("http://localhost:3000/todos/add", {
+            let res = await fetch("http://localhost:3000/todos/add", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newTodo)
             })
 
-            data = await data.json()
+            let data = await res.json()
             console.log(data)
 
-            let allDocs = await fetchAllDocs()
-            setTodos(allDocs)
+
+
+            if (res.ok === true ){
+                setTodos((todos)=>(
+                    [...todos,{...newTodo}]
+                ))
+            }
 
         } catch (error) {
             console.log("Adding Error Frontend", error)
@@ -36,7 +42,7 @@ export function useFunc() {
 
 
     // Update Todo
-    const updateTodo = async (id, todoMsg) => {
+    const updateTodo = async (date, todoMsg) => {
 
         const updatedTodo = {
             todoMsg: todoMsg,
@@ -44,17 +50,23 @@ export function useFunc() {
 
 
         try {
-            let data = await fetch(`http://localhost:3000/todos/update/${id}`, {
+            let res = await fetch(`http://localhost:3000/todos/update/${date}`, {
                 method: "PATCH",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedTodo)
             })
 
-            data = await data.json()
+            let data = await res.json()
             console.log(data);
 
-            let allDocs = await fetchAllDocs()
-            setTodos(allDocs)
+            if (res.ok === true) {
+                setTodos((todos)=>(
+                    todos.map((todo)=>(
+                        todo.date === date ? {...todo,todo: todoMsg}: todo
+                    ))
+                ))
+            }
+
 
         } catch (error) {
             console.log("Error in Updation Frontend", error)
@@ -64,19 +76,25 @@ export function useFunc() {
 
 
 
-    const deleteTodo = async (id) => {
+    const deleteTodo = async (date) => {
         try {
             
-            let data = await fetch(`http://localhost:3000/todos/delete/${id}`,{
+            let res = await fetch(`http://localhost:3000/todos/delete/${date}`,{
                 method: "DELETE",
                 headers: { 'Content-Type': 'application/json' },
             })
 
-            data = await data.json()
+            let data = await res.json()
             console.log(data);
 
-            let allDocs = await fetchAllDocs()
-            setTodos(allDocs)
+
+           if (res.ok === true) {
+             setTodos((todos)=>(
+                 todos.filter((todo)=>(
+                     todo.date !== date
+                 ))
+             ))
+           }
 
         } catch (error) {
             console.log("Error While Deleting Todo Frontend",error)
@@ -85,21 +103,28 @@ export function useFunc() {
 
 
 
-    const toggleisCompleted = async (id,isCompleted) => {
+    const toggleisCompleted = async (date,isCompleted) => {
 
         try {
 
-            let data = await fetch(`http://localhost:3000/todos/toggle/${id}`,{
+            let res = await fetch(`http://localhost:3000/todos/toggle/${date}`,{
                 method: "PATCH",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ isCompleted: !isCompleted })
             })
     
-            data = await data.json()
+            let data = await res.json()
             console.log(data)
 
-            let allDocs = await fetchAllDocs()
-            setTodos(allDocs)
+
+           if (res.ok === true) {
+             setTodos((todos)=>(
+                 todos.map((todo)=>(
+                     todo.date === date ? {...todo,isCompleted: !todo.isCompleted} : todo
+                 ))
+             ))
+           }
+
 
         } catch (error) {
             console.log("Error in Toggling in Frontend",error)
@@ -108,8 +133,8 @@ export function useFunc() {
     }
 
     const fetchAllDocs = async () => {
-        let data = await fetch("http://localhost:3000/todos/fetch")
-        data = await data.json()
+        let res = await fetch("http://localhost:3000/todos/fetch")
+        let data = await res.json()
         return data 
     }
 

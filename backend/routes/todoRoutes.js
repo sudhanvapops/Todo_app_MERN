@@ -9,8 +9,8 @@ router.get("/test",test)
 
 router.get("/fetch",allDocs)
 router.post("/add",addTodo)
-router.patch("/update/:id",updateTodo)
-router.patch("/toggle/:id",toggleisCompleted)
-router.delete("/delete/:id",deleteTodo)
+router.patch("/update/:date",updateTodo)
+router.patch("/toggle/:date",toggleisCompleted)
+router.delete("/delete/:date",deleteTodo)
 
 export default router

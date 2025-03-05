@@ -12,14 +12,13 @@ const addTodo = async (req,res)=>{
     try {
         
         // Validate 
-        const {todo,isCompleted} = req.body
-        
-        if (typeof todo !== "string" || typeof isCompleted !== "boolean" ){
+        const {date,todo,isCompleted} = req.body
+        if (typeof todo !== "string" || typeof isCompleted !== "boolean" || typeof date !== "number" ){
             return res.json({error: "Invalid Request Data Add"}).status(400)
         }
 
         // Creating new Todo
-        const result = await TodoModel.create({todo: todo ,isCompleted : isCompleted})
+        const result = await TodoModel.create({date: date,todo: todo ,isCompleted : isCompleted})
 
         console.log(result);
 
@@ -37,14 +36,14 @@ const addTodo = async (req,res)=>{
 const updateTodo = async (req,res) =>{
 
     const {todoMsg} = req.body
-    const { id } = req.params
+    const { date } = req.params
 
-    if (typeof todoMsg !== "string" || typeof id !== "string"){
+    if (typeof todoMsg !== "string" || typeof date !== "string"){
         return res.json({error: "Invalid Request Data Updation"}).status(400)
     }
 
     try {
-        const result = await TodoModel.updateOne({_id: id},{
+        const result = await TodoModel.updateOne({date: date},{
             $set : { todo: todoMsg }
         })
     
@@ -66,13 +65,13 @@ const updateTodo = async (req,res) =>{
 const deleteTodo = async (req,res)=>{
 
     try {
-        const {id} = req.params
+        const {date} = req.params
 
-        if (typeof id !== "string"){
+        if (typeof date !== "string"){
             return res.json({error: "Invalid Request ID Delete"}).status(400)
         }
     
-        let result = await TodoModel.deleteOne({_id: id})
+        let result = await TodoModel.deleteOne({date: date})
         console.log(result)
     
         return res.json({"Message": "Deleted Record","Result":result}).status(200)
@@ -102,17 +101,17 @@ const allDocs = async (req,res)=>{
 
 const toggleisCompleted = async (req,res)=>{
 
-    const {id} = req.params
+    const {date} = req.params
     const {isCompleted} = req.body
 
 
     try {
 
-        if (typeof isCompleted !== "boolean" || typeof id !== "string"){
+        if (typeof isCompleted !== "boolean" || typeof date !== "string"){
             return res.json({error: "Invalid Data Toggle"}).status(400)
         }
 
-        let result = await TodoModel.updateOne({_id: id},{
+        let result = await TodoModel.updateOne({date: date},{
             $set : {
                 isCompleted: isCompleted
             }
